@@ -20,12 +20,12 @@ services:
           name: hyperframes-backend
           property: host
 
-  # 2. Frontend Service (Docker-based Nginx)
+  # 2. Frontend Service (Static Site)
   - type: web
     name: hyperframes-frontend
-    env: docker
-    dockerContext: .
-    dockerfilePath: ./Dockerfile
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
         fromService:
