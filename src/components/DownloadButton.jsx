@@ -47,7 +47,6 @@ export default function DownloadButton() {
             setStatusLog("Success!");
             setProgress(100);
 
-            // 3. Trigger Download from Cloudinary
             const link = document.createElement('a');
             link.href = videoUrl;
             link.setAttribute('download', 'hyperframes_video.mp4');

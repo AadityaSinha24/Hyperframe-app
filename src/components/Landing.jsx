@@ -23,7 +23,7 @@ export default function Landing({ onLaunch }) {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black overflow-x-hidden">
-      {/* Navigation */}
+      
       <nav className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-black/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -42,7 +42,7 @@ export default function Landing({ onLaunch }) {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      
       <section className="relative pt-40 pb-20 px-6">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none" />
         
@@ -84,7 +84,7 @@ export default function Landing({ onLaunch }) {
           </motion.div>
         </div>
 
-        {/* Hero Mockup */}
+        
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,7 +102,7 @@ export default function Landing({ onLaunch }) {
         </motion.div>
       </section>
 
-      {/* Features */}
+      
       <section className="py-32 px-6 bg-white/[0.02] border-y border-white/[0.05]">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
@@ -125,7 +125,7 @@ export default function Landing({ onLaunch }) {
         </div>
       </section>
 
-      {/* Footer */}
+      
       <footer className="py-20 px-6 border-t border-white/[0.08]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2">

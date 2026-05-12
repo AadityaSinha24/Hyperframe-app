@@ -13,12 +13,12 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-black overflow-hidden font-outfit text-white">
-      {/* Sidebar / Chat */}
+     
       <aside className="w-[400px] h-full flex flex-col shrink-0">
         <Chat />
       </aside>
       
-      {/* Main Preview Area */}
+     
       <main className="flex-1 flex flex-col h-full bg-[#050505] relative">
         <div className="flex-1 overflow-hidden">
           <Preview />

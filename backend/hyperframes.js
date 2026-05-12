@@ -1,5 +1,4 @@
-// Hyperframes DSL Compiler
-// Converts structured instructions into HTML timeline
+
 
 export class HyperframesCompiler {
     constructor() {

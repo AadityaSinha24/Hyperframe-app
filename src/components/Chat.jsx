@@ -1,4 +1,4 @@
-// src/components/Chat.jsx
+
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useStore } from "../store/useStore";
@@ -46,7 +46,7 @@ export default function Chat() {
       const errorMsg = err.response?.data?.error || err.message;
       addMessage({
         role: "assistant",
-        content: `❌ Error: ${errorMsg}`,
+        content: ` Error: ${errorMsg}`,
       });
     } finally {
       setLoading(false);
@@ -55,7 +55,7 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col h-full bg-[#050505] border-r border-white/[0.08]">
-      {/* Header with New Chat */}
+     
       <div className="p-4 border-b border-white/[0.08] flex items-center justify-between bg-black/40 backdrop-blur-xl">
         <div className="flex items-center gap-2">
           <Sparkles className="text-primary" size={20} />

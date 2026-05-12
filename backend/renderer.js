@@ -20,7 +20,7 @@ export async function renderVideo(html, onProgress = () => {}) {
             fs.mkdirSync(tempDir, { recursive: true });
         }
 
-        // Write the composition to index.html
+
         fs.writeFileSync(htmlPath, '<!DOCTYPE html>\n<html>\n<head>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>\n</head>\n<body>\n' + html + '\n</body>\n</html>');
 
         const ffmpegBinary = ffmpegStatic;
@@ -45,11 +45,11 @@ export async function renderVideo(html, onProgress = () => {}) {
             
             let child;
             if (isWin) {
-                // Windows: Use string command for safer parsing with shell:true
+                
                 const cmd = `"${hyperframesBin}" render -o out.mp4 --no-audio`;
                 child = spawn(cmd, [], { cwd: tempDir, env, shell: true });
             } else {
-                // Render/Linux: Use optimized flags for cloud hardware
+                
                 child = spawn(hyperframesBin, [
                     "render", 
                     "-o", "out.mp4", 
@@ -64,7 +64,7 @@ export async function renderVideo(html, onProgress = () => {}) {
                 const line = data.toString().trim();
                 console.log(`[HF] ${line}`);
                 
-                // Parse percentage (e.g. "25%  Extracting frames")
+                
                 const match = line.match(/(\d+)%/);
                 if (match) {
                     onProgress(parseInt(match[1]), line);
@@ -86,7 +86,7 @@ export async function renderVideo(html, onProgress = () => {}) {
 
                 const buffer = fs.readFileSync(outputPath);
                 
-                // Cleanup
+               
                 const cleanup = (retries = 5) => {
                     setTimeout(() => {
                         try {
