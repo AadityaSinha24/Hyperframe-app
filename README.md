@@ -2,7 +2,7 @@
 
 Hyperframes is a next-generation AI video generation platform. It allows users to describe cinematic visions in natural language and transforms them into professional MP4 videos using a combination of **Groq-powered AI**, **GSAP timelines**, and **FFmpeg rendering**.
 
-![Hyperframes UI](https://github.com/AadityaSinha24/Hyperframe-app/raw/main/hero.png)
+![Hyperframes UI](./assets/hyperframe.png)
 
 ## 🌟 Key Features
 
