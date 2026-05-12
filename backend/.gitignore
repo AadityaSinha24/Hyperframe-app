@@ -1,0 +1,12 @@
+node_modules
+.env
+*.log
+out.mp4
+test_out.mp4
+test_render.js
+test-render.js
+test-compiler.js
+test-output.html
+temp/
+hyperlint-*
+hyperframes-*
