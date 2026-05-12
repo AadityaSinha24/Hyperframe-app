@@ -1,5 +1,5 @@
 # Use an official Node.js image with Chromium dependencies
-FROM node:20-slim
+FROM node:22-slim
 
 # Install system dependencies for Puppeteer, Chrome, and FFmpeg
 RUN apt-get update && apt-get install -y \

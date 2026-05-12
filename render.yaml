@@ -9,7 +9,7 @@ services:
     dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_VERSION
-        value: 20
+        value: 22
       - key: MONGODB_URI
         sync: false
       - key: GROQ_API_KEY
