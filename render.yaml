@@ -1,0 +1,38 @@
+services:
+  # 1. Backend Service (Docker-based for rendering support)
+  - type: web
+    name: hyperframes-backend
+    env: docker
+    plan: starter
+    region: ohio
+    dockerContext: ./backend
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: MONGODB_URI
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: hyperframes-backend
+          property: host
+
+  # 2. Frontend Service (Static Site)
+  - type: web
+    name: hyperframes-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: hyperframes-backend
+          property: host
+
+# Note: For hyperframes rendering to work on Render.com, 
+# you must ensure the environment has a headless browser.
+# If the Node environment fails, switch the backend to a Docker-based service.
