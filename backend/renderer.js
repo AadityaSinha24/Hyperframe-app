@@ -37,24 +37,28 @@ export async function renderVideo(html, onProgress = () => {}) {
             Path: `${localBin}${path.delimiter}${tempDir}${path.delimiter}${ffmpegDir}${path.delimiter}${process.env.Path || ""}`
         };
 
-        const hyperframesBin = path.join(localBin, os.platform() === 'win32' ? 'hyperframes.cmd' : 'hyperframes');
+        const isWin = os.platform() === 'win32';
+        const hyperframesBin = path.join(localBin, isWin ? 'hyperframes.cmd' : 'hyperframes');
 
         return new Promise((resolve, reject) => {
             console.log("🚀 Starting hyperframes spawn...");
-            // Directly call the local binary to avoid npx download/engine warnings
-            // Optimized for cloud: 720p @ 24fps reduces CPU load by ~60%
-            const child = spawn(hyperframesBin, [
-                "render", 
-                "-o", "out.mp4", 
-                "--no-audio",
-                "--width", "1280",
-                "--height", "720",
-                "--fps", "24"
-            ], {
-                cwd: tempDir,
-                env,
-                shell: true
-            });
+            
+            let child;
+            if (isWin) {
+                // Windows: Use string command for safer parsing with shell:true
+                const cmd = `"${hyperframesBin}" render -o out.mp4 --no-audio`;
+                child = spawn(cmd, [], { cwd: tempDir, env, shell: true });
+            } else {
+                // Render/Linux: Use optimized flags for cloud hardware
+                child = spawn(hyperframesBin, [
+                    "render", 
+                    "-o", "out.mp4", 
+                    "--no-audio",
+                    "--width", "1280",
+                    "--height", "720",
+                    "--fps", "24"
+                ], { cwd: tempDir, env, shell: true });
+            }
 
             child.stdout.on("data", (data) => {
                 const line = data.toString().trim();
