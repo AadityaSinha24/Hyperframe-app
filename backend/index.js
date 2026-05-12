@@ -14,12 +14,18 @@ import { Video } from './models/Video.js';
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/videngenai')
     .then(() => console.log('🍃 MongoDB Connected'))
     .catch(err => console.error('❌ MongoDB Error:', err));
+
+app.get('/', (req, res) => res.send('Hyperframes Engine is Live!'));
 
 const SYSTEM_PROMPT = 'You are a Senior Hyperframes Motion Engineer. Create high-end cinematic video compositions using HTML/CSS/GSAP.\n\n═══ CORE STRUCTURE ═══\nEvery composition MUST use this exact format:\n<div data-composition-id="vid" data-start="0" data-width="1920" data-height="1080" data-duration="10" style="position:relative; width:1920px; height:1080px; background:#000; overflow:hidden;">\n  <!-- Visual Elements (Clips) -->\n  <img id="bg1" class="clip" src="..." data-start="0" data-duration="5" data-track-index="0" style="position:absolute; width:100%; height:100%; object-fit:cover;">\n  <div id="text1" class="clip" data-start="1" data-duration="4" data-track-index="1" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:120px; font-family:sans-serif; font-weight:bold;">MODERN VISION</div>\n\n  <!-- GSAP Animation Logic -->\n  <script>\n    (function() {\n      const tl = gsap.timeline();\n      // Cinematic Camera Motion\n      tl.fromTo("#bg1", { scale: 1.2, x: -50 }, { scale: 1, x: 0, duration: 5, ease: "sine.inOut" }, 0);\n      // Professional Text reveal\n      tl.fromTo("#text1", { opacity: 0, y: 100 }, { opacity: 1, y: 0, duration: 1.5, ease: "expo.out" }, 1);\n      // Cleanup (Mandatory: Kill elements at their end time)\n      tl.set("#bg1", { opacity: 0, visibility: "hidden" }, 5);\n      tl.set("#text1", { opacity: 0, visibility: "hidden" }, 5);\n      \n      window.__timelines = window.__timelines || {};\n      window.__timelines["vid"] = tl;\n    })();\n  </script>\n</div>\n\n═══ CINEMATIC RULES ═══\n1. MULTI-CLIP: Use multiple <img> or <div background> clips in sequence (e.g., Clip A: 0-5s, Clip B: 5-10s).\n2. CAMERA MOTION: Always add a subtle scale (1.2 -> 1.0) or pan to static images using GSAP.\n3. OVERLAYS: Use semi-transparent gradients or drop-shadows on text for readability.\n4. TIMELINE: Always register the timeline to window.__timelines["vid"].\n\n═══ ASSET LIBRARY ═══\n- Nature: https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80\n- Ocean: https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1920&q=80\n- Cyberpunk: https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1920&q=80\n- Space: https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80\n- Abstract: https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1920&q=80\n\nReturn ONLY HTML. No markdown, no conversational text.';
 
