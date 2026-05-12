@@ -37,9 +37,12 @@ export async function renderVideo(html, onProgress = () => {}) {
             Path: `${localBin}${path.delimiter}${tempDir}${path.delimiter}${ffmpegDir}${path.delimiter}${process.env.Path || ""}`
         };
 
+        const hyperframesBin = path.join(localBin, os.platform() === 'win32' ? 'hyperframes.cmd' : 'hyperframes');
+
         return new Promise((resolve, reject) => {
             console.log("🚀 Starting hyperframes spawn...");
-            const child = spawn("npx", ["hyperframes", "render", "-o", "out.mp4", "--no-audio"], {
+            // Directly call the local binary to avoid npx download/engine warnings
+            const child = spawn(hyperframesBin, ["render", "-o", "out.mp4", "--no-audio"], {
                 cwd: tempDir,
                 env,
                 shell: true
