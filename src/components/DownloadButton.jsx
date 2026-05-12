@@ -31,7 +31,7 @@ export default function DownloadButton() {
       const poll = setInterval(async () => {
         try {
           const statusRes = await axios.get(`${apiUrl}/render-status/${jobId}`);
-          const { status, progress: p, log, error: jobErr } = statusRes.data;
+          const { status, progress: p, log, error: jobErr, videoUrl } = statusRes.data;
 
           if (status === "failed") {
             clearInterval(poll);
@@ -43,33 +43,23 @@ export default function DownloadButton() {
           setProgress(p || 0);
           setStatusLog(log || "Rendering...");
 
-          if (status === "completed") {
-            clearInterval(poll);
-            setStatusLog("Finalizing download...");
+          if (status === "completed" && videoUrl) {
+            setStatusLog("Success!");
+            setProgress(100);
+
+            // 3. Trigger Download from Cloudinary
+            const link = document.createElement('a');
+            link.href = videoUrl;
+            link.setAttribute('download', 'hyperframes_video.mp4');
+            link.setAttribute('target', '_blank');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
             
-            // 3. Trigger Robust Blob Download
-            try {
-              const downloadRes = await axios.get(`${apiUrl}/download/${jobId}`, {
-                responseType: 'blob'
-              });
-              
-              const url = window.URL.createObjectURL(new Blob([downloadRes.data]));
-              const link = document.createElement('a');
-              link.href = url;
-              link.setAttribute('download', 'hyperframes_video.mp4');
-              document.body.appendChild(link);
-              link.click();
-              link.remove();
-              window.URL.revokeObjectURL(url);
-              
-              setLoading(false);
-              setSuccess(true);
-              setStatusLog("Success!");
-              setTimeout(() => setSuccess(false), 5000);
-            } catch (dlErr) {
-              setError("Download failed to initiate.");
-              setLoading(false);
-            }
+            setLoading(false);
+            setSuccess(true);
+            setTimeout(() => setSuccess(false), 5000);
+            return;
           }
         } catch (e) {
           clearInterval(poll);

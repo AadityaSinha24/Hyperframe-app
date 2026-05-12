@@ -12,7 +12,16 @@ import { renderVideo } from './renderer.js';
 import mongoose from 'mongoose';
 import { Video } from './models/Video.js';
 
+import { v2 as cloudinary } from 'cloudinary';
+
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 const app = express();
 app.use(cors({
     origin: '*',
@@ -108,6 +117,19 @@ app.post('/chat', async (req, res) => {
 
 const jobs = new Map();
 
+const uploadToCloudinary = (buffer) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            { resource_type: "video", folder: "hyperframes" },
+            (error, result) => {
+                if (error) reject(error);
+                else resolve(result.secure_url);
+            }
+        );
+        stream.end(buffer);
+    });
+};
+
 app.post('/render', async (req, res) => {
     const { html } = req.body;
     if (!html) return res.status(400).json({ error: 'No HTML' });
@@ -118,8 +140,12 @@ app.post('/render', async (req, res) => {
         const buffer = await renderVideo(html, (progress, log) => {
             jobs.set(jobId, { status: 'rendering', progress, log });
         });
-        jobs.set(jobId, { status: 'completed', progress: 100, buffer });
-        setTimeout(() => jobs.delete(jobId), 300000);
+        
+        jobs.set(jobId, { status: 'uploading', progress: 95, log: 'Uploading to cloud...' });
+        const videoUrl = await uploadToCloudinary(buffer);
+        
+        jobs.set(jobId, { status: 'completed', progress: 100, videoUrl });
+        setTimeout(() => jobs.delete(jobId), 600000); // Keep for 10 mins
     } catch (err) {
         jobs.set(jobId, { status: 'failed', error: err.message });
     }
@@ -128,7 +154,13 @@ app.post('/render', async (req, res) => {
 app.get('/render-status/:id', (req, res) => {
     const job = jobs.get(req.params.id);
     if (!job) return res.status(404).json({ error: 'Not found' });
-    res.json({ status: job.status, progress: job.progress, log: job.log, error: job.error });
+    res.json({ 
+        status: job.status, 
+        progress: job.progress, 
+        log: job.log, 
+        error: job.error,
+        videoUrl: job.videoUrl 
+    });
 });
 
 app.get('/download/:id', (req, res) => {
