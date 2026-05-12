@@ -10,3 +10,13 @@ test-output.html
 temp/
 hyperlint-*
 hyperframes-*
+
+# .env file in backend folder
+backend/.env
+backend/.env.example
+
+
+# .env file in root folder
+./.env
+
+./.env.local
